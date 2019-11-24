@@ -43,3 +43,7 @@ class TmuxSession(BaseKind):
         [target] = context['targets']
         _run_command(['tmux', 'switch-client', '-t', target['action__session']])
 
+    def action_kill(self, context):
+        [target] = context['targets']
+        _run_command(['tmux', 'kill-session', '-t', target['action__session']])
+
