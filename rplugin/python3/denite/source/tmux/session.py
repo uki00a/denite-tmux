@@ -6,7 +6,8 @@ from ...kind.base import Base as BaseKind
 
 # TODO error handling
 def _run_command(args):
-    return subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return process.stdout.decode('utf-8')
 
 def _parse_output(output):
     return [_parse_line(line) for line in output.split('\n') if not re.match(r'^\s*$', line)]
@@ -29,8 +30,7 @@ class Source(BaseSource):
         self.kind = TmuxSession(vim)
 
     def gather_candidates(self, context):
-        process = _run_command(['tmux', 'list-sessions', '-F', '#{?session_attached,(attached),} #{session_name}'])
-        output = process.stdout.decode('utf-8')
+        output = _run_command(['tmux', 'list-sessions', '-F', '#{?session_attached,(attached),} #{session_name}'])
         return _parse_output(output)
 
 class TmuxSession(BaseKind):
